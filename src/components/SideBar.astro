@@ -1,8 +1,9 @@
 ---
-import SideBarFooter from "./SideBarFooter.astro";
 const { sideBarActiveItemID } = Astro.props;
+import { getArchiveByMonth } from "../utils/archive.ts";
+const archive = await getArchiveByMonth();
+const grouped = Object.entries(archive).sort((a, b) => b[0].localeCompare(a[0])); // 降順
 ---
-
 <div class="drawer-side z-40">
   <label for="my-drawer" class="drawer-overlay"></label>
   
@@ -20,14 +21,12 @@ const { sideBarActiveItemID } = Astro.props;
           loading="lazy"
         />
       </a>
-
     </div>
 
     <!-- サイドバーメニュー -->
     <nav class="flex-1">
       <ul class="menu px-2 text-sm space-y-1">
       
-
         <!-- コンテンツカテゴリ 
         <li class="mt-4 font-semibold">📖 記録とコンテンツ</li>
         <li><a href="/parks">家族のおでかけマップ</a></li>
@@ -35,21 +34,18 @@ const { sideBarActiveItemID } = Astro.props;
         <li><a href="/seasons">季節のイベント記</a></li>
         <li><a href="/walks">散歩・休日の記録</a></li>
         <li><a href="/terms">用語・家族の豆知識</a></li>
+        <li><a href="/dates">投稿日順</a></li>
         <li><a href="/links">リンク・参考集</a></li>
         -->
 
         <!-- 発見と学び -->
         <li class="mt-4 font-semibold">🔍 発見とメモ</li>
-        <li><a href="/tags">タグ一覧</a></li>
-
-
+        <li><a href="/tags">🏷 タグ一覧</a></li>
+        <li><a href="/archive">📂月別アーカイブ</a></li>
 
 
       </ul>
     </nav>
-
-    <!-- サイドバー下部フッター -->
-    <SideBarFooter />
     
   </aside>
 </div>

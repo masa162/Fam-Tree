@@ -24,8 +24,8 @@ const articles = (await getCollection("articles")).filter((article) =>
 ---
 
 <BaseLayout
-  title={`タグ: ${tag} | あさおとみどり`}
-  description={`タグ「${tag}」に関連する医学論文一覧ページです。`}
+  title={`タグ: ${tag} | Family treehouse`}
+  description={`タグ「${tag}」に関連する一覧ページです。`}
   image="/ogp.png"
   url={`https://isuku.jp/tags/${tag}`}
   sideBarActiveItemID="articles"
@@ -43,7 +43,7 @@ const articles = (await getCollection("articles")).filter((article) =>
             desc={data.description}
             img={data.heroImage}
             url={`/articles/${slug}`}
-            badge="あさおとみどり"
+            badge="Family treehouse"
             tags={data.tags}
           />
         ))}
