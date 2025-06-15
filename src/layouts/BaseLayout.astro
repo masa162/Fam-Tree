@@ -1,0 +1,56 @@
+---
+import "../styles/global.css";
+import Nav from "../components/Nav.astro";
+import SideBar from "../components/SideBar.astro";
+import type { AstroComponentFactory } from "astro/runtime/server/index.js";
+
+// ページごとのプロパティ
+interface Props {
+  title: string;
+  description: string;
+  image?: string;
+  url?: string;
+  sideBarActiveItemID?: string;
+}
+
+const {
+  title,
+  description,
+  image = "/images/ogp/ogp.png",
+  url = "https://fam-tree.netlify.app/",
+  sideBarActiveItemID = "home",
+} = Astro.props;
+---
+
+<html lang="ja" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={image} />
+    <meta property="og:url" content={url} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="alternate" type="application/rss+xml" title="Family Treehouse RSS" href="/rss.xml" />
+  </head>
+
+  <body class="bg-base-100 text-neutral-700">
+
+
+    <!-- モバイルナビ -->
+    <Nav title="🌳" />
+
+    <!-- サイドバー付きのメインレイアウト -->
+    <div class="drawer drawer-mobile lg:drawer-open">
+      <input id="my-drawer" type="checkbox" class="drawer-toggle" />
+      <div class="drawer-content flex flex-col max-w-3xl mx-auto px-6 py-10">
+        <slot />
+      </div>
+      <SideBar sideBarActiveItemID={sideBarActiveItemID} />
+    </div>
+
+  </body>
+</html>

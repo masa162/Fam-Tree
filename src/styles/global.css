@@ -1,0 +1,22 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ===== あさおとみどり: グローバルスタイル ===== */
+
+body {
+  @apply font-sans bg-primary-light text-gray-800;
+}
+
+a {
+  @apply text-primary hover:underline;
+}
+
+.button {
+  @apply bg-primary text-white py-2 px-4 rounded-xl shadow-md hover:bg-primary-dark transition;
+}
+
+/* ===== タイムラインの最終要素の線を非表示に ===== */
+.time-line-container > div:last-child .education__time > .education__line {
+  display: none;
+}
