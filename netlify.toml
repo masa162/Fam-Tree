@@ -1,4 +1,3 @@
-[[headers]]
-  for = "/*"
-  [headers.values]
-    Authorization = "Basic bWFzYTozOTM5"
+[[edge_functions]]
+  path = "/*"
+  function = "basic-auth"
