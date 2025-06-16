@@ -3,33 +3,34 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import HorizontalCard from "../../components/HorizontalCard.astro";
 import { getCollection } from "astro:content";
 
+/* 新しい順に記事を並べ替え */
 const articles = (await getCollection("articles")).sort(
   (a, b) => new Date(b.data.pubDate).valueOf() - new Date(a.data.pubDate).valueOf()
 );
 ---
 
-<script type="module">
+<script is:inline>
+  /* ── 検索フィルタ ───────────────────────────── */
   const input = document.getElementById("search");
   input?.addEventListener("input", () => {
-    const keyword = input.value.toLowerCase();
-    const cards = document.querySelectorAll(".article-card");
-    cards.forEach((card) => {
-      const text = card.innerText.toLowerCase();
-      card.style.display = text.includes(keyword) ? "block" : "none";
+    const kw = input.value.toLowerCase();
+    document.querySelectorAll(".article-card").forEach((c) => {
+      c.style.display = c.innerText.toLowerCase().includes(kw) ? "block" : "none";
     });
   });
 </script>
 
 <BaseLayout
   title="family treehouse"
-  description="family treehouseの一覧ページ。"
+  description="family treehouse の記事一覧ページ"
   image="/ogp.png"
   url="https://familytreehouse.netlify.app/"
   sideBarActiveItemID="articles"
 >
   <section class="max-w-4xl mx-auto px-6 py-12">
-    <h1 class="text-4xl font-bold mb-6">🌿 family記事一覧</h1>
+    <h1 class="text-4xl font-bold mb-6">🌿 family 記事一覧</h1>
 
+    <!-- 検索ボックス -->
     <div class="mb-8">
       <input
         id="search"
@@ -40,21 +41,20 @@ const articles = (await getCollection("articles")).sort(
     </div>
 
     {articles.length === 0 ? (
-      <p class="text-gray-500 dark:text-gray-400">記事がまだありません。</p>
+      <p class="text-gray-500">記事がまだありません。</p>
     ) : (
       <div class="space-y-6">
         {articles.map(({ slug, data }) => (
-          <div class="article-card">
-            {/* HorizontalCard に個別アイキャッチを渡す */}
+          <div class="article-card" ={slug}>
             <HorizontalCard
-              title={data.title}
-              desc={data.description}
-              img={data.image}
-              url={`/articles/${slug}`}
-              badge="あさおとみどり"
-              tags={data.tags}
-              pubDate={data.pubDate}
-            />
+                  title={data.title}
+                  desc={data.description}
+                  img={data.heroImage ?? data.image ?? "/ogp.png"} 
+                  url={`/articles/${slug}/`}
+                  badge={data.badge ?? "family treehouse"}
+                  tags={data.tags}
+                  pubDate={data.pubDate}
+                />
           </div>
         ))}
       </div>

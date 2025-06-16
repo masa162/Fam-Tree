@@ -9,24 +9,34 @@ export async function getStaticPaths() {
   }));
 }
 
-const { slug } = Astro.params;
-const article = await getEntryBySlug("articles", slug);
-const { title, pubDate, tags } = article.data;
+const { slug }   = Astro.params;
+const article    = await getEntryBySlug("articles", slug);
+
+if (!article) throw new Error(`記事が見つかりません: ${slug}`);
+
+const { title, description = "", pubDate, tags = [], heroImage, image } = article.data;
 const { Content } = await article.render();
 ---
 
-<BaseLayout title={title}>
+<BaseLayout
+  title={title}
+  description={description}
+  image={heroImage ?? image ?? "/ogp.png"}
+>
   <article class="prose prose-neutral dark:prose-invert max-w-3xl mx-auto px-6 py-12">
     <header class="mb-8">
       <h1 class="text-4xl font-extrabold leading-tight mb-2">{title}</h1>
-      <p class="text-sm text-gray-500 dark:text-gray-400 mb-2">
-        公開日: {new Date(pubDate).toLocaleDateString("ja-JP")}
-      </p>
 
-      {tags?.length && (
+      {pubDate && (
+        <p class="text-sm text-gray-500 dark:text-gray-400 mb-2">
+          公開日: {new Date(pubDate).toLocaleDateString("ja-JP")}
+        </p>
+      )}
+
+      {tags.length > 0 && (
         <div class="flex flex-wrap gap-2">
           {tags.map((tag) => (
-            <a href={`/tags/${tag}`} class="badge badge-outline">
+            <a href={`/tags/${tag}`} class="badge badge-outline" ={tag}>
               {tag}
             </a>
           ))}
@@ -34,7 +44,7 @@ const { Content } = await article.render();
       )}
     </header>
 
-    <!-- ここで Markdown 本文を正しく描画 -->
+    <!-- Markdown 本文 -->
     <Content />
   </article>
 </BaseLayout>

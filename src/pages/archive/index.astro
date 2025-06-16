@@ -2,59 +2,73 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { getCollection } from "astro:content";
 
-// 年→月→記事の三段階で分類
+/* ---------------- ① 記事取得 ---------------- */
 const articles = await getCollection("articles");
 
-const archiveMap: Record<string, Record<string, { title: string; slug: string }[]>> = {};
-for (const article of articles) {
-  const date = new Date(article.data.pubDate);
-  const y = date.getFullYear().toString();
-  const m = String(date.getMonth() + 1).padStart(2, "0");
-
-  if (!archiveMap[y]) archiveMap[y] = {};
-  if (!archiveMap[y][m]) archiveMap[y][m] = [];
-  archiveMap[y][m].push({ title: article.data.title, slug: article.slug });
+/* ---------------- ② 年→月→記事 のネスト構造を生成 ---------------- */
+interface PostMeta {
+  title: string;
+  slug: string;
 }
 
-// 年の降順
-const sortedYears = Object.keys(archiveMap).sort((a, b) => b.localeCompare(a));
-const latestYear = sortedYears[0];
-const latestMonth = Object.keys(archiveMap[latestYear]).sort((a, b) => b.localeCompare(a))[0];
+const archiveMap: Record<string, Record<string, PostMeta[]>> = {};
+
+for (const article of articles) {
+  const date  = new Date(article.data.pubDate);
+  const year  = String(date.getFullYear());
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+
+  (archiveMap[year]  ??= {});
+  (archiveMap[year][month] ??= []).push({
+    title: article.data.title,
+    slug : article.slug,
+  });
+}
+
+/* ---------------- ③ 年・月を降順ソート ---------------- */
+const sortedYears   = Object.keys(archiveMap).sort((a, b) => b.localeCompare(a));
+const latestYear    = sortedYears[0];
+const latestMonth   = Object.keys(archiveMap[latestYear]).sort((a, b) => b.localeCompare(a))[0];
 ---
 
-<BaseLayout title="月別アーカイブ" description="Family Treehouse - 年月ごとの記事一覧">
+<BaseLayout
+  title="月別アーカイブ"
+  description="Family Treehouse - 年月ごとの記事一覧"
+>
   <main class="max-w-3xl mx-auto px-4 py-8">
     <h1 class="text-2xl font-bold mb-6">📂 年別アーカイブ</h1>
 
     <ul class="space-y-4">
-      {sortedYears.map((year, index) => {
+      {sortedYears.map((year) => {
         const months = Object.keys(archiveMap[year]).sort((a, b) => b.localeCompare(a));
+
         return (
-          <li>
+          <li key={year}>
             <details
               class="bg-base-100 rounded-md border border-gray-300 p-4"
               open={year === latestYear}
             >
               <summary class="cursor-pointer text-lg font-semibold text-blue-800 flex items-center gap-1">
-                <span class="icon transition-all">▶</span>
+                <span class="icon">▶</span>
                 {year}年
               </summary>
 
               <ul class="mt-2 ml-4 space-y-2">
                 {months.map((month) => {
-                  const posts = archiveMap[year][month];
+                  const posts         = archiveMap[year][month];
                   const isLatestMonth = year === latestYear && month === latestMonth;
 
                   return (
-                    <li>
+                    <li key={month}>
                       <details class="ml-2" open={isLatestMonth}>
                         <summary class="cursor-pointer text-base text-blue-700 flex items-center gap-1">
-                          <span class="icon transition-all">▶</span>
+                          <span class="icon">▶</span>
                           {Number(month)}月（{posts.length}件）
                         </summary>
+
                         <ul class="mt-1 ml-4 list-disc text-sm text-blue-600 space-y-1">
                           {posts.map((post) => (
-                            <li>
+                            <li key={post.slug}>
                               <a href={`/articles/${post.slug}`} class="hover:underline">
                                 {post.title}
                               </a>
@@ -73,6 +87,7 @@ const latestMonth = Object.keys(archiveMap[latestYear]).sort((a, b) => b.localeC
     </ul>
   </main>
 
+  <!-- ▶ / ▼ のトグル -->
   <script is:inline>
     document.querySelectorAll("details").forEach((el) => {
       const icon = el.querySelector("summary .icon");

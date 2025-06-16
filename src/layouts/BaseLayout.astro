@@ -1,25 +1,38 @@
 ---
+/* ---------- Imports ---------- */
 import "../styles/global.css";
 import Nav from "../components/Nav.astro";
 import SideBar from "../components/SideBar.astro";
-import type { AstroComponentFactory } from "astro/runtime/server/index.js";
+import type { ImageMetadata } from "astro";
 
-// ページごとのプロパティ
+/* ---------- Props 型 ---------- */
 interface Props {
   title: string;
-  description: string;
-  image?: string;
+  description?: string;
+  image?: string | ImageMetadata;   /* 文字列 or ImageMetadata */
   url?: string;
   sideBarActiveItemID?: string;
 }
 
+/* ---------- Props 受け取り＆デフォルト ---------- */
 const {
   title,
-  description,
-  image = "/images/ogp/ogp.png",
+  description = "家族の記録ブログ – The Family Treehouse",
+  image,
   url = "https://fam-tree.netlify.app/",
   sideBarActiveItemID = "home",
-} = Astro.props;
+} = Astro.props as Props;
+
+/* ---------- og:image の絶対 URL 生成 ---------- */
+const ogImage = (() => {
+  if (typeof image === "string") {
+    return new URL(image, Astro.site).href;
+  }
+  if (image) {
+    return new URL(image.src, Astro.site).href;
+  }
+  return new URL("/ogp.png", Astro.site).href;   // フォールバック
+})();
 ---
 
 <html lang="ja" data-theme="light">
@@ -27,23 +40,26 @@ const {
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
+
+    <!-- SEO / OGP -->
     <meta name="description" content={description} />
-    <meta property="og:title" content={title} />
+    <meta property="og:type"        content="website" />
+    <meta property="og:title"       content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:image" content={image} />
-    <meta property="og:url" content={url} />
-    <meta name="twitter:card" content="summary_large_image" />
+    <meta property="og:image"       content={ogImage} />
+    <meta property="og:url"         content={url} />
+    <meta name="twitter:card"        content="summary_large_image" />
+
+    <!-- Favicon & RSS -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="alternate" type="application/rss+xml" title="Family Treehouse RSS" href="/rss.xml" />
   </head>
 
   <body class="bg-base-100 text-neutral-700">
-
-
     <!-- モバイルナビ -->
     <Nav title="🌳" />
 
-    <!-- サイドバー付きのメインレイアウト -->
+    <!-- サイドバー付きメイン -->
     <div class="drawer drawer-mobile lg:drawer-open">
       <input id="my-drawer" type="checkbox" class="drawer-toggle" />
       <div class="drawer-content flex flex-col max-w-3xl mx-auto px-6 py-10">
@@ -51,6 +67,5 @@ const {
       </div>
       <SideBar sideBarActiveItemID={sideBarActiveItemID} />
     </div>
-
   </body>
 </html>

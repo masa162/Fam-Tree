@@ -1,42 +1,58 @@
 ---
+import { Image as AstroImage } from "astro:assets";
+
 const {
   title,
-  img = "/images/ogp/ogp.png", // デフォルト画像
+  heroImage,
+  img,
   desc,
   url,
   badge,
   tags = [],
   pubDate,
-  target = "_self"
+  target = "_self",
 } = Astro.props;
 
-// 日付整形（nullやstringもカバー）
-const formattedDate = pubDate
-  ? new Date(pubDate).toLocaleDateString("ja-JP", {
-      year: "numeric",
-      month: "long",
-      day: "numeric"
-    })
-  : "";
+/* ✅ デフォルトをサイト共通 OGP に */
+const DEFAULT_IMG = "/ogp.png";
+
+const imageSrc   = heroImage ?? img ?? DEFAULT_IMG;
+const isImgObj   = typeof imageSrc === "object";
 ---
 
 <div class="rounded-lg bg-base-100 hover:shadow-xl transition ease-in-out hover:scale-[102%]">
   <a href={url} target={target}>
     <div class="hero-content flex-col md:flex-row gap-4">
-      <img
-        src={img}
-        alt={title}
-        class="w-full md:w-[13rem] h-auto rounded-lg object-cover"
-        loading="lazy"
-      />
+
+      {isImgObj ? (
+        <AstroImage
+          src={imageSrc}
+          alt={title}
+          width={208}
+          height={130}
+          class="w-full md:w-[13rem] h-auto rounded-lg object-cover"
+          loading="lazy"
+        />
+      ) : (
+        <img
+          src={imageSrc}
+          alt={title}
+          class="w-full md:w-[13rem] h-auto rounded-lg object-cover"
+          loading="lazy"
+        />
+      )}
+
+      <!-- 本文はそのまま -->
       <div class="grow w-full">
         <h1 class="text-xl font-bold text-green-800">
           {title}
           {badge && <span class="badge badge-secondary ml-2">{badge}</span>}
         </h1>
 
-        {formattedDate && (
-          <p class="text-sm text-gray-500 mt-1">投稿日：{formattedDate}</p>
+        {pubDate && (
+          <p class="text-sm text-gray-500 mt-1">
+            投稿日：{new Date(pubDate).toLocaleDateString("ja-JP")}
+          </p>
         )}
 
         <p class="py-1 text-base text-gray-800">{desc}</p>
@@ -44,7 +60,7 @@ const formattedDate = pubDate
         {tags.length > 0 && (
           <div class="card-actions justify-start mt-2 flex flex-wrap gap-2">
             {tags.map((tag) => (
-              <a href={`/tags/${tag}`} class="badge badge-outline" key={tag}>
+              <a href={`/tags/${tag}`} class="badge badge-outline">
                 {tag}
               </a>
             ))}
