@@ -24,10 +24,10 @@ const articles = (await getCollection("articles")).filter((article) =>
 ---
 
 <BaseLayout
-  title={`タグ: ${tag} | Family treehouse`}
+  title={`タグ: ${tag} | うちのきろく`}
   description={`タグ「${tag}」に関連する一覧ページです。`}
   image="/ogp.png"
-  url={`https://isuku.jp/tags/${tag}`}
+  url={`https://fam-tree.netlify.app/tags/${tag}`}
   sideBarActiveItemID="articles"
 >
   <section class="max-w-4xl mx-auto px-6 py-12">
@@ -43,7 +43,7 @@ const articles = (await getCollection("articles")).filter((article) =>
             desc={data.description}
             img={data.heroImage}
             url={`/articles/${slug}`}
-            badge="Family treehouse"
+            badge="uchinokiroku"
             tags={data.tags}
           />
         ))}

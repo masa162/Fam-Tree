@@ -10,16 +10,16 @@ const posts = (await getCollection("articles"))
 ---
 
 <BaseLayout
-  title="Family Treehouse"
-  description="Family Treehouse は、家族の日々をあたたかく記録するローカルブログです。"
+  title="うちのきろく"
+  description="うちのきろくは、家族の日々をあたたかく記録するローカルブログです。"
   image="/ogp.png"
   sideBarActiveItemID="home"
 >
   <h1 class="text-2xl font-bold mt-4 mb-6">
-    ようこそ、Family Treehouseへ 🌳
+    ようこそ、うちのきろくへ 🌳
   </h1>
   <p class="mb-8">
-    「Family Treehouse」は、日々の暮らしの中で感じたことや、家族の思い出をあたたかく記録するローカルブログです。
+    「うちのきろく」は、日々の暮らしの中で感じたことや、家族の思い出をあたたかく記録するローカルブログです。
     日常の風景やイベント、ささやかな気づきを写真とともに綴っていきます。
   </p>
 
@@ -32,7 +32,7 @@ const posts = (await getCollection("articles"))
         desc={data.description}
         img={data.heroImage ?? data.image ?? "/ogp.png"}   /* ← ここが肝心！ */
         url={`/articles/${slug}/`}
-        badge={data.badge ?? "family treehouse"}
+        badge={data.badge ?? "uchinokiroku"}
         tags={data.tags}
         pubDate={data.pubDate}
       />

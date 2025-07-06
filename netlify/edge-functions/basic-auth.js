@@ -6,7 +6,7 @@ export default async (request, context) => {
     return new Response("Unauthorized", {
       status: 401,
       headers: {
-        "WWW-Authenticate": 'Basic realm="FamilyTreehouse"',
+        "WWW-Authenticate": 'Basic realm="uchinokiroku"',
       },
     });
   }

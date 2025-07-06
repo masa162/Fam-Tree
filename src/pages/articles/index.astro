@@ -21,14 +21,14 @@ const articles = (await getCollection("articles")).sort(
 </script>
 
 <BaseLayout
-  title="family treehouse"
-  description="family treehouse の記事一覧ページ"
+  title="うちのきろく"
+  description="うちのきろくの記事一覧ページ"
   image="/ogp.png"
-  url="https://familytreehouse.netlify.app/"
+  url="https://fam-tree.netlify.app/"
   sideBarActiveItemID="articles"
 >
   <section class="max-w-4xl mx-auto px-6 py-12">
-    <h1 class="text-4xl font-bold mb-6">🌿 family 記事一覧</h1>
+    <h1 class="text-4xl font-bold mb-6">🌿 記事一覧</h1>
 
     <!-- 検索ボックス -->
     <div class="mb-8">
@@ -51,7 +51,7 @@ const articles = (await getCollection("articles")).sort(
                   desc={data.description}
                   img={data.heroImage ?? data.image ?? "/ogp.png"} 
                   url={`/articles/${slug}/`}
-                  badge={data.badge ?? "family treehouse"}
+                  badge={data.badge ?? "uchinokiroku"}
                   tags={data.tags}
                   pubDate={data.pubDate}
                 />

@@ -1,6 +1,6 @@
 {
-  "name": "Fam-Tree",
-  "description": "成長し続ける秘密基地",
+  "name": "uchinokiroku",
+  "description": "家族の記録ブログ - うちのきろく",
   "type": "module",
   "version": "3.0.0",
   "private": true,
