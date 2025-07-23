@@ -14,7 +14,7 @@ const article    = await getEntryBySlug("articles", slug);
 
 if (!article) throw new Error(`記事が見つかりません: ${slug}`);
 
-const { title, description = "", pubDate, tags = [], heroImage, image } = article.data;
+const { title, description = "", pubDate, tags = [], heroImage, image, author } = article.data;
 const { Content } = await article.render();
 ---
 
@@ -30,6 +30,12 @@ const { Content } = await article.render();
       {pubDate && (
         <p class="text-sm text-gray-500 dark:text-gray-400 mb-2">
           公開日: {new Date(pubDate).toLocaleDateString("ja-JP")}
+        </p>
+      )}
+
+      {author && (
+        <p class="text-sm text-gray-500 dark:text-gray-400 mb-2">
+          著者: {author}
         </p>
       )}
 

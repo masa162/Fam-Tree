@@ -30,7 +30,7 @@ const posts = (await getCollection("articles"))
       <HorizontalCard
         title={data.title}
         desc={data.description}
-        img={data.heroImage ?? data.image ?? "/ogp.png"}   /* ← ここが肝心！ */
+        img={data.heroImage ?? data.image}
         url={`/articles/${slug}/`}
         badge={data.badge ?? "uchinokiroku"}
         tags={data.tags}

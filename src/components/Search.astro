@@ -1,0 +1,64 @@
+---
+---
+<div id="search-component" class="relative">
+  <input type="text" id="search-input" placeholder="記事を検索..." class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+  <ul id="search-results" class="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg hidden"></ul>
+</div>
+
+<script>
+  import Fuse from 'fuse.js';
+
+  const searchComponent = document.getElementById('search-component');
+  const searchInput = document.getElementById('search-input');
+  const searchResults = document.getElementById('search-results');
+  let fuse;
+  let posts = [];
+
+  // 検索インデックスを取得
+  fetch('/api/search.json')
+    .then(response => response.json())
+    .then(data => {
+      posts = data;
+      fuse = new Fuse(posts, {
+        keys: ['title', 'description', 'tags'],
+        includeScore: true,
+        threshold: 0.4, // あいまい度の調整 (0.0: 完全一致, 1.0: 全てが一致)
+      });
+    });
+
+  // 入力イベント
+  searchInput.addEventListener('input', (e) => {
+    const query = e.target.value;
+    if (query.length === 0) {
+      searchResults.innerHTML = '';
+      searchResults.classList.add('hidden');
+      return;
+    }
+
+    const results = fuse.search(query);
+    displayResults(results);
+  });
+
+  // 結果を表示
+  function displayResults(results) {
+    searchResults.innerHTML = '';
+    if (results.length > 0) {
+      results.slice(0, 10).forEach(result => { // 上位10件を表示
+        const li = document.createElement('li');
+        li.className = 'px-4 py-2 hover:bg-gray-100 cursor-pointer';
+        li.innerHTML = `<a href="/articles/${result.item.slug}" class="block">${result.item.title}</a>`;
+        searchResults.appendChild(li);
+      });
+      searchResults.classList.remove('hidden');
+    } else {
+      searchResults.classList.add('hidden');
+    }
+  }
+
+  // 外側をクリックしたら結果を閉じる
+  document.addEventListener('click', (e) => {
+    if (!searchComponent.contains(e.target)) {
+      searchResults.classList.add('hidden');
+    }
+  });
+</script>

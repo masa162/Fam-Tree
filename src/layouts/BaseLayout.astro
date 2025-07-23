@@ -35,7 +35,7 @@ const ogImage = (() => {
 })();
 ---
 
-<html lang="ja" data-theme="light">
+<html lang="ja">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -56,6 +56,40 @@ const ogImage = (() => {
   </head>
 
   <body class="bg-base-100 text-neutral-700">
+    <script is:inline>
+      const getThemePreference = () => {
+        if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
+          return localStorage.getItem('theme');
+        }
+        return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      };
+
+      const setTheme = (theme) => {
+        document.documentElement.setAttribute('data-theme', theme);
+        document.documentElement.className = theme; // Tailwind CSS の dark クラス切り替え用
+        if (typeof localStorage !== 'undefined') {
+          localStorage.setItem('theme', theme);
+        }
+      };
+
+      const toggleTheme = () => {
+        const currentTheme = getThemePreference();
+        const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+        setTheme(newTheme);
+      };
+
+      // 初期テーマ設定
+      setTheme(getThemePreference());
+
+      // システム設定の変更を監視
+      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+        setTheme(e.matches ? 'dark' : 'light');
+      });
+
+      // グローバルにテーマ切り替え関数を公開
+      window.toggleTheme = toggleTheme;
+    </script>
+
     <!-- モバイルナビ -->
     <Nav title="🌳" />
 

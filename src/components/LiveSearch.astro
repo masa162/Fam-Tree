@@ -1,0 +1,55 @@
+---
+---
+<div id="search-component" class="relative mb-8">
+  <input type="text" id="search-input" placeholder="🔍 キーワードで検索..." class="input input-bordered w-full">
+</div>
+
+<script>
+  import Fuse from 'fuse.js';
+
+  const searchInput = document.getElementById('search-input');
+  let fuse;
+  let posts = [];
+  let allArticleElements = [];
+
+  // 最初にすべての記事要素を取得しておく
+  document.addEventListener('DOMContentLoaded', () => {
+    allArticleElements = Array.from(document.querySelectorAll('.article-card'));
+  });
+
+  // 検索インデックスを取得
+  fetch('/api/search.json')
+    .then(response => response.json())
+    .then(data => {
+      posts = data;
+      fuse = new Fuse(posts, {
+        keys: ['title', 'description', 'tags'],
+        includeScore: true,
+        threshold: 0.4,
+      });
+    });
+
+  // 入力イベント
+  searchInput.addEventListener('input', (e) => {
+    const query = e.target.value;
+
+    // 入力が空の場合はすべての記事を表示
+    if (query.length === 0) {
+      allArticleElements.forEach(el => el.style.display = 'block');
+      return;
+    }
+
+    const results = fuse.search(query);
+    const visibleSlugs = new Set(results.map(r => r.item.slug));
+
+    // 表示・非表示を切り替え
+    allArticleElements.forEach(el => {
+      const slug = el.getAttribute('data-slug');
+      if (visibleSlugs.has(slug)) {
+        el.style.display = 'block';
+      } else {
+        el.style.display = 'none';
+      }
+    });
+  });
+</script>

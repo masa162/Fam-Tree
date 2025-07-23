@@ -42,6 +42,8 @@ const articleCollection = defineCollection({
       image: z.string().optional(),       // 文字列パス (/public/images/…)
       tags: z.array(z.string()).optional(),
       badge: z.string().optional(),
+      category: z.string().optional(),
+      author: z.string().optional(),
     }),
 });
 

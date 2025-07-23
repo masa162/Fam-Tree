@@ -11,10 +11,11 @@ const {
   tags = [],
   pubDate,
   target = "_self",
+  author,
 } = Astro.props;
 
 /* ✅ デフォルトをサイト共通 OGP に */
-const DEFAULT_IMG = "/ogp.png";
+const DEFAULT_IMG = "/images/ogp/ogp.png";
 
 const imageSrc   = heroImage ?? img ?? DEFAULT_IMG;
 const isImgObj   = typeof imageSrc === "object";
@@ -52,6 +53,12 @@ const isImgObj   = typeof imageSrc === "object";
         {pubDate && (
           <p class="text-sm text-gray-500 mt-1">
             投稿日：{new Date(pubDate).toLocaleDateString("ja-JP")}
+          </p>
+        )}
+
+        {author && (
+          <p class="text-sm text-gray-500 mt-1">
+            著者: {author}
           </p>
         )}
 

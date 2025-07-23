@@ -1,4 +1,5 @@
 ---
+import Search from './Search.astro';
 const { sideBarActiveItemID } = Astro.props;
 import { getArchiveByMonth } from "../utils/archive.ts";
 const archive = await getArchiveByMonth();
@@ -38,11 +39,24 @@ const grouped = Object.entries(archive).sort((a, b) => b[0].localeCompare(a[0]))
         <li><a href="/links">リンク・参考集</a></li>
         -->
 
+        <!-- 検索ボックス -->
+        <li class="px-4 py-2">
+          <Search />
+        </li>
+
         <!-- 発見と学び -->
         <li class="mt-4 font-semibold">🔍 発見とメモ</li>
         <li><a href="/tags">🏷 タグ一覧</a></li>
         <li><a href="/archive">📂月別アーカイブ</a></li>
+        <li><a href="/essays">📝 エッセイ</a></li>
 
+        <!-- テーマ切り替えボタン -->
+        <li class="mt-4">
+          <button onclick="window.toggleTheme()" class="btn btn-ghost w-full justify-start">
+            <span class="light-icon">☀️ ライトモード</span>
+            <span class="dark-icon hidden">🌙 ダークモード</span>
+          </button>
+        </li>
 
       </ul>
     </nav>
