@@ -16,6 +16,18 @@ if (!article) throw new Error(`記事が見つかりません: ${slug}`);
 
 const { title, description = "", pubDate, tags = [], heroImage, image, author } = article.data;
 const { Content } = await article.render();
+
+// すべての記事を取得し、公開日でソート
+const allArticles = (await getCollection("articles")).sort(
+  (a, b) => new Date(a.data.pubDate).valueOf() - new Date(b.data.pubDate).valueOf() // 古い順にソート
+);
+
+// 現在の記事のインデックスを見つける
+const currentIndex = allArticles.findIndex((art) => art.slug === slug);
+
+// 前後の記事を取得
+const prevArticle = currentIndex > 0 ? allArticles[currentIndex - 1] : null;
+const nextArticle = currentIndex < allArticles.length - 1 ? allArticles[currentIndex + 1] : null;
 ---
 
 <BaseLayout
@@ -23,7 +35,7 @@ const { Content } = await article.render();
   description={description}
   image={heroImage ?? image ?? "/ogp.png"}
 >
-  <article class="prose prose-neutral dark:prose-invert max-w-3xl mx-auto px-6 py-12">
+  <article class="prose prose-neutral dark:prose-invert max-w-3xl mx-auto px-6 py-12 overflow-x-auto">
     <header class="mb-8">
       <h1 class="text-4xl font-extrabold leading-tight mb-2">{title}</h1>
 
@@ -52,5 +64,24 @@ const { Content } = await article.render();
 
     <!-- Markdown 本文 -->
     <Content />
+
+    <div class="divider my-8"></div>
+
+    <div class="flex justify-between items-center mt-8">
+      <div>
+        {prevArticle && (
+          <a href={`/articles/${prevArticle.slug}/`} class="btn btn-outline btn-sm">
+            ← {prevArticle.data.title}
+          </a>
+        )}
+      </div>
+      <div>
+        {nextArticle && (
+          <a href={`/articles/${nextArticle.slug}/`} class="btn btn-outline btn-sm">
+            {nextArticle.data.title} →
+          </a>
+        )}
+      </div>
+    </div>
   </article>
 </BaseLayout>
