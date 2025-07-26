@@ -15,15 +15,15 @@ const posts = (await getCollection("articles"))
   image="/ogp.png"
   sideBarActiveItemID="home"
 >
-  <h1 class="text-2xl font-bold mt-4 mb-6">
+  <h1 class="text-2xl font-bold mt-4 mb-6 text-base-content">
     ようこそ、うちのきろくへ 🌳
   </h1>
-  <p class="mb-8">
+  <p class="mb-8 text-base-content">
     「うちのきろく」は、日々の暮らしの中で感じたことや、家族の思い出をあたたかく記録するローカルブログです。
     日常の風景やイベント、ささやかな気づきを写真とともに綴っていきます。
   </p>
 
-  <h2 class="text-xl font-semibold mb-4">📚 新着記事</h2>
+  <h2 class="text-xl font-semibold mb-4 text-base-content">📚 新着記事</h2>
 
   <div class="space-y-6">
     {posts.map(({ slug, data }) => (
